@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI 提示词助手</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-br from-purple-900 to-blue-900 min-h-screen p-8">
+  <div class="max-w-2xl mx-auto">
+    <h1 class="text-4xl font-bold mb-8 text-center text-white">🐂 AI 提示词助手</h1>
+    
+    <div class="bg-white/10 rounded-xl p-6 backdrop-blur border border-white/20 text-white">
+      <div class="mb-4">
+        <label class="block mb-2">主体/动作描述：</label>
+        <input id="subject" type="text" placeholder="例如：a cute cat, a flying dragon..." 
+          class="w-full bg-white/20 rounded-lg px-4 py-3 text-white placeholder-white/50">
+      </div>
+
+      <div class="flex gap-4 mb-6">
+        <select id="type" class="bg-white/20 rounded-lg px-4 py-2 text-white flex-1">
+          <option value="image">🖼️ 文生图</option>
+          <option value="video">🎬 文生视频</option>
+        </select>
+        
+        <select id="style" class="bg-white/20 rounded-lg px-4 py-2 text-white flex-1">
+          <option value="realistic">📷 写实</option>
+          <option value="anime">🎨 动漫</option>
+          <option value="cinematic">🎥 电影感</option>
+        </select>
+      </div>
+
+      <button onclick="generate()" class="w-full bg-gradient-to-r from-purple-500 to-pink-500 py-3 rounded-lg font-bold hover:opacity-90">
+        ✨ 生成提示词
+      </button>
+
+      <div id="result" class="mt-6 p-4 bg-white/10 rounded-lg border border-white/20 hidden">
+        <p class="text-sm text-gray-300 mb-2">生成的提示词：</p>
+        <p id="prompt" class="text-lg text-white mb-4"></p>
+        <button onclick="copy()" class="bg-green-500 px-4 py-2 rounded-lg text-white hover:bg-green-600">
+          📋 复制
+        </button>
+      </div>
+    </div>
+    
+    <p class="text-center text-white/50 mt-8">
+      支持 Midjourney, Stable Diffusion, DALL-E, 可灵, 即梦等AI工具
+    </p>
+  </div>
+
+  <script>
+    const templates = {
+      image: {
+        realistic: (s) => `A high-quality photograph of ${s || '[SUBJECT]'}, professional lighting, 8K resolution, detailed texture, Canon EOS R5`,
+        anime: (s) => `Anime style illustration of ${s || '[SUBJECT]'}, vibrant colors, detailed background, studio Ghibli inspired, Makoto Shinkai style`,
+        cinematic: (s) => `Cinematic shot of ${s || '[SUBJECT]'}, dramatic lighting, film grain, 35mm camera effect, teal and orange color grading`
+      },
+      video: {
+        realistic: (s) => `${s || '[ACTION]'} in realistic style, smooth camera movement, natural lighting, 4K, handheld camera feel`,
+        anime: (s) => `${s || '[ACTION]'} in anime style, vibrant colors, dynamic movement, Japanese animation, Makoto Shinkai`,
+        cinematic: (s) => `${s || '[ACTION]'} cinematic video, dramatic lighting, slow motion, film quality, epic score`
+      }
+    };
+
+    function generate() {
+      const subject = document.getElementById('subject').value;
+      const type = document.getElementById('type').value;
+      const style = document.getElementById('style').value;
+      const template = templates[type][style];
+      document.getElementById('prompt').textContent = template(subject);
+      document.getElementById('result').classList.remove('hidden');
+    }
+
+    function copy() {
+      navigator.clipboard.writeText(document.getElementById('prompt').textContent);
+      alert('已复制到剪贴板！');
+    }
+  </script>
+</body>
+</html>
