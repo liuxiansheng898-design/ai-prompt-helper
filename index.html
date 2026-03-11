@@ -3,114 +3,190 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AI 提示词助手</title>
-  <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
-  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
-  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <title>AI提示词助手 - 免费生成Midjourney/SD提示词</title>
+  <meta name="description" content="免费AI提示词生成工具，支持Midjourney、Stable Diffusion、DALL-E、可灵、即梦等AI工具">
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gradient-to-br from-purple-900 to-blue-900 min-h-screen">
-  <div id="root"></div>
+<body class="bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 min-h-screen p-4 md:p-8">
+  <div class="max-w-4xl mx-auto">
+    <!-- Header -->
+    <header class="text-center mb-8">
+      <h1 class="text-4xl md:text-5xl font-bold text-white mb-2">🐂 AI提示词助手</h1>
+      <p class="text-white/70 text-lg">免费生成高质量AI绘画/视频提示词</p>
+      <div class="flex justify-center gap-2 mt-4 flex-wrap">
+        <span class="bg-white/20 text-white px-3 py-1 rounded-full text-sm">Midjourney</span>
+        <span class="bg-white/20 text-white px-3 py-1 rounded-full text-sm">Stable Diffusion</span>
+        <span class="bg-white/20 text-white px-3 py-1 rounded-full text-sm">DALL-E</span>
+        <span class="bg-white/20 text-white px-3 py-1 rounded-full text-sm">可灵</span>
+        <span class="bg-white/20 text-white px-3 py-1 rounded-full text-sm">即梦</span>
+      </div>
+    </header>
 
-  <script type="text/babel">
-    const { useState } = React;
+    <!-- Main App -->
+    <div class="bg-white/10 rounded-2xl p-6 backdrop-blur border border-white/20 text-white mb-6">
+      <!-- Subject Input -->
+      <div class="mb-6">
+        <label class="block mb-2 text-lg">🎨 描述你的主体</label>
+        <input id="subject" type="text" placeholder="例如：一只可爱的猫咪、赛博朋克城市、古装美女..." 
+          class="w-full bg-white/20 rounded-xl px-4 py-4 text-white placeholder-white/50 text-lg">
+      </div>
 
-    function App() {
-      const [prompt, setPrompt] = useState('');
-      const [type, setType] = useState('image');
-      const [style, setStyle] = useState('realistic');
-      const [subject, setSubject] = useState('');
-
-      const templates = {
-        image: {
-          realistic: (s) => `A high-quality photograph of ${s || '[SUBJECT]'}, professional lighting, 8K resolution, detailed texture, Canon EOS R5`,
-          anime: (s) => `Anime style illustration of ${s || '[SUBJECT]'}, vibrant colors, detailed background, studio Ghibli inspired, Makoto Shinkai style`,
-          cinematic: (s) => `Cinematic shot of ${s || '[SUBJECT]'}, dramatic lighting, film grain, 35mm camera effect, teal and orange color grading`
-        },
-        video: {
-          realistic: (s) => `${s || '[ACTION]'} in realistic style, smooth camera movement, natural lighting, 4K, handheld camera feel`,
-          anime: (s) => `${s || '[ACTION]'} in anime style, vibrant colors, dynamic movement, Japanese animation, Makoto Shinkai`,
-          cinematic: (s) => `${s || '[ACTION]'} cinematic video, dramatic lighting, slow motion, film quality, epic score`
-        }
-      };
-
-      const generatePrompt = () => {
-        const template = templates[type]?.[style] || templates.image.realistic;
-        setPrompt(template(subject));
-      };
-
-      const copyToClipboard = () => {
-        navigator.clipboard.writeText(prompt);
-        alert('已复制到剪贴板！');
-      };
-
-      return (
-        <div className="max-w-2xl mx-auto p-8">
-          <h1 className="text-4xl font-bold mb-8 text-center text-white">🐂 AI 提示词助手</h1>
-          
-          <div className="bg-white/10 rounded-xl p-6 backdrop-blur border border-white/20">
-            <div className="mb-4">
-              <label className="block text-white mb-2">主体/动作描述：</label>
-              <input 
-                type="text" 
-                value={subject}
-                onChange={(e) => setSubject(e.target.value)}
-                placeholder="例如：a cute cat, a flying dragon..."
-                className="w-full bg-white/20 rounded-lg px-4 py-3 text-white placeholder-white/50"
-              />
-            </div>
-
-            <div className="flex gap-4 mb-6">
-              <select 
-                value={type}
-                onChange={(e) => setType(e.target.value)}
-                className="bg-white/20 rounded-lg px-4 py-2 text-white flex-1"
-              >
-                <option value="image">🖼️ 文生图</option>
-                <option value="video">🎬 文生视频</option>
-              </select>
-              
-              <select 
-                value={style}
-                onChange={(e) => setStyle(e.target.value)}
-                className="bg-white/20 rounded-lg px-4 py-2 text-white flex-1"
-              >
-                <option value="realistic">📷 写实</option>
-                <option value="anime">🎨 动漫</option>
-                <option value="cinematic">🎥 电影感</option>
-              </select>
-            </div>
-
-            <button 
-              onClick={generatePrompt}
-              className="w-full bg-gradient-to-r from-purple-500 to-pink-500 py-3 rounded-lg font-bold hover:opacity-90 transition"
-            >
-              ✨ 生成提示词
-            </button>
-
-            {prompt && (
-              <div className="mt-6 p-4 bg-white/10 rounded-lg border border-white/20">
-                <p className="text-sm text-gray-300 mb-2">生成的提示词：</p>
-                <p className="text-lg text-white mb-4">{prompt}</p>
-                <button 
-                  onClick={copyToClipboard}
-                  className="bg-green-500 px-4 py-2 rounded-lg text-white hover:bg-green-600"
-                >
-                  📋 复制
-                </button>
-              </div>
-            )}
-          </div>
-          
-          <p className="text-center text-white/50 mt-8">
-            支持 Midjourney, Stable Diffusion, DALL-E, 可灵, 即梦等AI工具
-          </p>
+      <!-- Type Selection -->
+      <div class="grid md:grid-cols-2 gap-4 mb-6">
+        <div>
+          <label class="block mb-2 text-lg">🖼️ 类型</label>
+          <select id="type" class="w-full bg-white/20 rounded-xl px-4 py-3 text-white text-lg">
+            <option value="image">📷 文生图</option>
+            <option value="video">🎬 文生视频</option>
+          </select>
         </div>
-      );
+        <div>
+          <label class="block mb-2 text-lg">🎭 风格</label>
+          <select id="style" class="w-full bg-white/20 rounded-xl px-4 py-3 text-white text-lg">
+            <option value="realistic">📷 写实摄影</option>
+            <option value="anime">🎨 动漫插画</option>
+            <option value="cinematic">🎥 电影质感</option>
+            <option value="chinese">🏮 中国风</option>
+            <option value="fantasy">🧙 奇幻冒险</option>
+            <option value="scifi">🤖 科幻未来</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Advanced Options -->
+      <div class="mb-6">
+        <button onclick="toggleAdvanced()" class="text-white/70 hover:text-white text-sm">⚙️ 高级选项 ▼</button>
+        <div id="advanced" class="hidden mt-4 grid md:grid-cols-2 gap-4">
+          <div>
+            <label class="block mb-2 text-sm text-white/70">✨ 质量修饰</label>
+            <select id="quality" class="w-full bg-white/10 rounded-lg px-3 py-2 text-white text-sm">
+              <option value="">默认</option>
+              <option value="8K,ultra detailed">8K超高清</option>
+              <option value="masterpiece,best quality">大师级作品</option>
+              <option value="photorealistic,4k">照片级真实</option>
+            </select>
+          </div>
+          <div>
+            <label class="block mb-2 text-sm text-white/70">💡 光线</label>
+            <select id="lighting" class="w-full bg-white/10 rounded-lg px-3 py-2 text-white text-sm">
+              <option value="">默认</option>
+              <option value="golden hour">黄金时刻</option>
+              <option value="cinematic lighting">电影布光</option>
+              <option value="volumetric lighting">体积光</option>
+              <option value="softbox lighting">柔光箱</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Generate Button -->
+      <button onclick="generate()" class="w-full bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 py-4 rounded-xl font-bold text-lg hover:opacity-90 transition transform hover:scale-[1.02]">
+        ✨ 一键生成提示词
+      </button>
+
+      <!-- Result -->
+      <div id="result" class="mt-6 p-4 bg-white/10 rounded-xl border border-white/20 hidden">
+        <div class="flex justify-between items-start mb-2">
+          <p class="text-sm text-gray-300">📝 生成的提示词：</p>
+          <span class="text-xs text-white/50">支持中英双语</span>
+        </div>
+        <p id="prompt" class="text-lg text-white mb-4 leading-relaxed"></p>
+        <div class="flex gap-2">
+          <button onclick="copy()" class="bg-green-500 px-4 py-2 rounded-lg text-white hover:bg-green-600 flex items-center gap-2">
+            📋 复制
+          </button>
+          <button onclick="copyEN()" class="bg-blue-500 px-4 py-2 rounded-lg text-white hover:bg-blue-600 flex items-center gap-2">
+            🇺🇸 复制英文版
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Templates -->
+    <div class="bg-white/10 rounded-2xl p-6 backdrop-blur border border-white/20 text-white mb-6">
+      <h2 class="text-xl font-bold mb-4">🔥 热门模板</h2>
+      <div class="grid md:grid-cols-3 gap-3">
+        <button onclick="useTemplate('可爱女生头像')" class="bg-white/10 hover:bg-white/20 px-4 py-3 rounded-xl text-left transition">
+          👩 可爱女生头像
+        </button>
+        <button onclick="useTemplate('赛博朋克城市')" class="bg-white/10 hover:bg-white/20 px-4 py-3 rounded-xl text-left transition">
+          🌃 赛博朋克城市
+        </button>
+        <button onclick="useTemplate('古风美女')" class="bg-white/10 hover:bg-white/20 px-4 py-3 rounded-xl text-left transition">
+          🏮 古风美女
+        </button>
+        <button onclick="useTemplate('产品摄影')" class="bg-white/10 hover:bg-white/20 px-4 py-3 rounded-xl text-left transition">
+          📦 产品摄影
+        </button>
+        <button onclick="useTemplate('宠物萌图')" class="bg-white/10 hover:bg-white/20 px-4 py-3 rounded-xl text-left transition">
+          🐱 宠物萌图
+        </button>
+        <button onclick="useTemplate('电影海报')" class="bg-white/10 hover:bg-white/20 px-4 py-3 rounded-xl text-left transition">
+          🎬 电影海报
+        </button>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="text-center text-white/50 text-sm">
+      <p>🚀 永久免费 • 无需注册 • 即开即用</p>
+      <p class="mt-2">Made by 铁牛 🐂</p>
+    </footer>
+  </div>
+
+  <script>
+    const templates = {
+      image: {
+        realistic: (s, q, l) => `A high-quality photograph of ${s}, ${q}${l?' '+l:''}professional lighting, sharp focus, detailed texture`,
+        anime: (s, q, l) => `Anime style illustration of ${s}, ${q}vibrant colors, detailed background, studio Ghibli inspired, anime artwork`,
+        cinematic: (s, q, l) => `Cinematic shot of ${s}, ${q}dramatic lighting, film grain, 35mm camera effect, movie scene`,
+        chinese: (s, q, l) => `Chinese traditional style of ${s}, ${q}ink painting, traditional Chinese art, elegant, classical`,
+        fantasy: (s, q, l) => `Fantasy art of ${s}, ${q}magic, epic, detailed fantasy world, mythical creature`,
+        scifi: (s, q, l) => `Sci-fi concept of ${s}, ${q}futuristic, cybernetic, neon lights, technology`
+      },
+      video: {
+        realistic: (s, q, l) => `${s}, realistic style, smooth camera movement, natural lighting, 4K, handheld camera`,
+        anime: (s, q, l) => `${s}, anime style, vibrant colors, dynamic movement, Japanese animation, Makoto Shinkai`,
+        cinematic: (s, q, l) => `${s}, cinematic video, dramatic lighting, slow motion, film quality, epic score`,
+        chinese: (s, q, l) => `${s}, Chinese traditional style, elegant movement, ink wash aesthetics, classical music`,
+        fantasy: (s, q, l) => `${s}, fantasy animation, magical effects, epic fantasy场景, dynamic shots`,
+        scifi: (s, q, l) => `${s}, sci-fi video, futuristic, cyberpunk, special effects, motion graphics`
+      }
+    };
+
+    function generate() {
+      const subject = document.getElementById('subject').value || '[主体描述]';
+      const type = document.getElementById('type').value;
+      const style = document.getElementById('style').value;
+      const quality = document.getElementById('quality').value;
+      const lighting = document.getElementById('lighting').value;
+      
+      const template = templates[type][style];
+      const prompt = template(subject, quality, lighting);
+      
+      document.getElementById('prompt').textContent = prompt;
+      document.getElementById('result').classList.remove('hidden');
     }
 
-    const root = ReactDOM.createRoot(document.getElementById('root'));
-    root.render(<App />);
+    function toggleAdvanced() {
+      const advanced = document.getElementById('advanced');
+      advanced.classList.toggle('hidden');
+    }
+
+    function useTemplate(subject) {
+      document.getElementById('subject').value = subject;
+      generate();
+    }
+
+    function copy() {
+      navigator.clipboard.writeText(document.getElementById('prompt').textContent);
+      alert('✅ 已复制到剪贴板！');
+    }
+
+    function copyEN() {
+      navigator.clipboard.writeText(document.getElementById('prompt').textContent);
+      alert('✅ 英文提示词已复制！');
+    }
   </script>
 </body>
 </html>
